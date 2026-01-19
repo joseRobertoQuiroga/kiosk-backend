@@ -1,0 +1,65 @@
+# ═══════════════════════════════════════════════════════════════
+# 🚫 DOCKERIGNORE PARA API
+# ═══════════════════════════════════════════════════════════════
+# Archivos y carpetas que NO se copian al contenedor Docker
+# ═══════════════════════════════════════════════════════════════
+
+# Node modules
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Build
+dist
+build
+.next
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+coverage
+.nyc_output
+test
+tests
+*.spec.ts
+*.test.ts
+
+# Docs
+README.md
+docs
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Misc
+.temp
+.tmp
