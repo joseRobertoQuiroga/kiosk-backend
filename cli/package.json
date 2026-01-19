@@ -1,0 +1,40 @@
+{
+  "name": "kiosko-license-cli",
+  "version": "1.0.0",
+  "description": "CLI para gestión de licencias del sistema Kiosco Scanner",
+  "main": "dist/index.js",
+  "bin": {
+    "kiosko-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist",
+    "package": "pkg dist/index.js --targets node18-win-x64,node18-linux-x64 --output dist/kiosko-cli",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "kiosco",
+    "license",
+    "cli",
+    "management"
+  ],
+  "author": "José Roberto Quiroga",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.3",
+    "commander": "^11.1.0",
+    "inquirer": "^8.2.5",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.4",
+    "pkg": "^5.8.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

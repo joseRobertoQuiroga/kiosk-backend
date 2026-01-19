@@ -1,0 +1,63 @@
+[
+  {
+    "codigo": "987654321",
+    "nombre": "Coca-Cola 500ml",
+    "precio": 8.5,
+    "detalles": "Bebida gaseosa sabor cola, refrescante y burbujeante",
+    "imagen": "coca-cola.jpg",
+    "categoria": "Soda"
+  },
+  {
+    "codigo": "98765432100",
+    "nombre": "shambo soder 500ml",
+    "precio": 123,
+    "detalles": "shampo para cabello delicado",
+    "categoria": "shampo",
+    "imagen": "producto-1765438418103-993831881.webp"
+  },
+  {
+    "codigo": 98765,
+    "nombre": "nuchacho",
+    "precio": 15.5,
+    "detalles": "Descripción del producto",
+    "categoria": "Bebidas",
+    "promocion": "Oferta 2x1",
+    "imagen": "default-product.jpg"
+  },
+  {
+    "codigo": 12345,
+    "nombre": "cobra gay",
+    "precio": 8,
+    "detalles": "Otra descripción",
+    "categoria": "Snacks",
+    "promocion": "",
+    "imagen": "default-product.jpg"
+  },
+  {
+    "codigo": 123456,
+    "nombre": "max men",
+    "precio": 16,
+    "detalles": "otra descipcion",
+    "categoria": "h",
+    "promocion": 233,
+    "imagen": "default-product.jpg"
+  },
+  {
+    "codigo": 1234567,
+    "nombre": "rexona",
+    "precio": 20,
+    "detalles": "otra descripcion",
+    "categoria": "desodarante",
+    "promocion": 5,
+    "imagen": "default-product.jpg"
+  },
+  {
+    "codigo": "11112222",
+    "nombre": "rexona23",
+    "precio": 35,
+    "detalles": "otra descripcion",
+    "categoria": "desodarante",
+    "promocion": "2x1",
+    "imagen": "producto-11112222-1766012057731.png"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "kiosco-2",
+    "nombre": "Kiosco 2",
+    "ubicacion": "Planta Baja",
+    "activo": true,
+    "fecha_registro": "2025-12-02T02:53:09.684Z"
+  },
+  {
+    "id": "kiosco-1764653668006",
+    "nombre": "kiosco-5",
+    "ubicacion": "planta-baja",
+    "activo": true,
+    "fecha_registro": "2025-12-02T05:34:28.006Z"
+  },
+  {
+    "id": "kiosco-1764822110414",
+    "nombre": "kiosco-4",
+    "ubicacion": "primer-piso",
+    "activo": true,
+    "fecha_registro": "2025-12-04T04:21:50.414Z"
+  },
+  {
+    "id": "kiosco-1764986975038",
+    "nombre": "koi-8",
+    "ubicacion": "subterraneo",
+    "activo": true,
+    "fecha_registro": "2025-12-06T02:09:35.038Z"
+  }
+]
