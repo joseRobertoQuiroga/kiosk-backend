@@ -1,27 +1,19 @@
-# ═══════════════════════════════════════════════════════════════
-# 🚫 DOCKERIGNORE PARA API
-# ═══════════════════════════════════════════════════════════════
-# Archivos y carpetas que NO se copian al contenedor Docker
-# ═══════════════════════════════════════════════════════════════
+cd ..
+notepad .dockerignore
+```
 
+Asegúrate que **NO** tenga la carpeta `cli` en la lista de ignorados. Debería verse así:
+```
 # Node modules
 node_modules
 npm-debug.log
-yarn-error.log
-package-lock.json
 
-# Build
+# Build (solo dist del root, NO cli/dist)
 dist
-build
-.next
 
 # Logs
 logs
 *.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Environment files
 .env
@@ -35,17 +27,12 @@ yarn-error.log*
 # IDE
 .vscode
 .idea
-*.swp
-*.swo
-*~
 
 # OS
 .DS_Store
-Thumbs.db
 
 # Tests
 coverage
-.nyc_output
 test
 tests
 *.spec.ts
@@ -56,8 +43,6 @@ README.md
 docs
 
 # Docker
-Dockerfile
-.dockerignore
 docker-compose.yml
 
 # Misc
