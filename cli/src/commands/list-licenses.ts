@@ -1,4 +1,3 @@
-// cli/src/commands/list-licenses.ts
 import ora from 'ora';
 import Table from 'cli-table3';
 import chalk from 'chalk';
@@ -38,13 +37,12 @@ export async function listLicensesCommand(options: {
 
     const licenses = response.data;
 
-    // Formato JSON
+    // JSON
     if (options.format === 'json') {
       console.log(JSON.stringify(licenses, null, 2));
       process.exit(0);
     }
 
-    // Formato tabla
     const table = new Table({
       head: [
         chalk.cyan.bold('License Key'),
@@ -55,7 +53,7 @@ export async function listLicensesCommand(options: {
         chalk.cyan.bold('Expira'),
         chalk.cyan.bold('Días Rest.'),
       ],
-      colWidths: [25, 20, 20, 12, 12, 12, 10],
+      colWidths: [25, 20, 22, 10, 12, 12, 10],
       wordWrap: true,
     });
 
@@ -67,22 +65,27 @@ export async function listLicensesCommand(options: {
           ? chalk.red
           : chalk.yellow;
 
-      const daysRemaining = license.days_remaining
-        ? license.days_remaining > 0
-          ? chalk.green(license.days_remaining)
-          : chalk.red('Expirado')
-        : chalk.gray('N/A');
+      const daysRemaining = license.expires_at
+        ? Math.ceil(
+            (new Date(license.expires_at).getTime() - Date.now()) /
+              (1000 * 60 * 60 * 24)
+          )
+        : null;
 
       table.push([
         license.license_key,
-        license.client?.name || 'N/A',
-        license.branch?.name || 'N/A',
-        license.type,
+        license.client?.company_name || 'N/A',
+        license.branch?.branch_name || 'N/A',
+        license.license_type,
         statusColor(license.status),
-        license.expiry_date
-          ? new Date(license.expiry_date).toLocaleDateString()
+        license.expires_at
+          ? new Date(license.expires_at).toLocaleDateString()
           : chalk.gray('Nunca'),
-        daysRemaining,
+        daysRemaining !== null
+          ? daysRemaining > 0
+            ? chalk.green(daysRemaining)
+            : chalk.red('Expirada')
+          : chalk.gray('N/A'),
       ]);
     });
 
@@ -91,7 +94,6 @@ export async function listLicensesCommand(options: {
     console.log('');
     logger.info(`Total: ${licenses.length} licencias`);
 
-    // Mostrar estadísticas
     const stats = {
       active: licenses.filter((l: any) => l.status === 'active').length,
       expired: licenses.filter((l: any) => l.status === 'expired').length,
@@ -100,9 +102,9 @@ export async function listLicensesCommand(options: {
 
     console.log('');
     console.log(
-      `${chalk.green('Activas:')} ${stats.active}  |  ` +
-      `${chalk.red('Expiradas:')} ${stats.expired}  |  ` +
-      `${chalk.yellow('Revocadas:')} ${stats.revoked}`
+      `${chalk.green('Activas:')} ${stats.active}  | ` +
+        `${chalk.red('Expiradas:')} ${stats.expired}  | ` +
+        `${chalk.yellow('Revocadas:')} ${stats.revoked}`
     );
     console.log('');
   } catch (error: any) {
