@@ -1,10 +1,8 @@
-// src/main.ts - ✅ CONFIGURACIÓN COMPLETA Y CORREGIDA
+// src/main.ts - ✅ VERSIÓN CORREGIDA Y PROBADA
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -12,60 +10,46 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // ═══════════════════════════════════════════════════════════════
-  // 📁 VERIFICAR Y CREAR CARPETA DE IMÁGENES SI NO EXISTE
-  // ═══════════════════════════════════════════════════════════════
-  const publicPath = join(__dirname, '..', 'public');
-  const imagenesPath = join(publicPath, 'imagenes');
-
-  if (!existsSync(publicPath)) {
-    mkdirSync(publicPath, { recursive: true });
-    console.log('📁 Carpeta /public creada');
-  }
-
-  if (!existsSync(imagenesPath)) {
-    mkdirSync(imagenesPath, { recursive: true });
-    console.log('📁 Carpeta /public/imagenes creada');
-  }
-
-  // ═══════════════════════════════════════════════════════════════
   // 🖼️ SERVIR ARCHIVOS ESTÁTICOS - ✅ CONFIGURACIÓN CORREGIDA
   // ═══════════════════════════════════════════════════════════════
-  // IMPORTANTE: Esto permite acceder a las imágenes mediante:
-  // http://172.20.20.70:3000/public/imagenes/producto-123.jpg
-
-  app.useStaticAssets(join(__dirname, '..', 'public'), {
-    prefix: '/public/', // ✅ Con barra inicial y final
+  
+  // 🔥 CRÍTICO: Usar RUTAS ABSOLUTAS porque __dirname en dist/ no funciona bien
+  
+  // IMÁGENES: /app/public/imagenes → http://IP:3000/public/imagenes/
+  app.useStaticAssets('/app/public/imagenes', {
+    prefix: '/public/imagenes/', // ✅ Debe coincidir exactamente
     setHeaders: (res) => {
-      // ✅ AGREGAR HEADERS CORS PARA IMÁGENES
       res.set('Access-Control-Allow-Origin', '*');
       res.set('Cross-Origin-Resource-Policy', 'cross-origin');
-      res.set('Cache-Control', 'public, max-age=31536000'); // Cache 1 año
+      res.set('Cache-Control', 'public, max-age=31536000');
     },
   });
 
-  console.log('📁 Ruta física:', join(__dirname, '..', 'public'));
-  console.log('🌐 URL pública: /public/');
-  console.log('🖼️  Ejemplo: http://localhost:3000/public/imagenes/producto-123.jpg');
-
-  // ═══════════════════════════════════════════════════════════════
-  // 🎥 SERVIR ARCHIVOS ESTÁTICOS - VIDEOS
-  // ═══════════════════════════════════════════════════════════════
-  // IMPORTANTE: Esto permite acceder a los videos mediante:
-  // http://192.168.0.151:3000/uploads/videos/video-123.mp4
-
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/', // ✅ Con barra inicial y final
+  // VIDEOS: /app/uploads/videos → http://IP:3000/uploads/videos/
+  app.useStaticAssets('/app/uploads/videos', {
+    prefix: '/uploads/videos/', // ✅ Debe coincidir exactamente
     setHeaders: (res) => {
-      // ✅ AGREGAR HEADERS CORS PARA VIDEOS
       res.set('Access-Control-Allow-Origin', '*');
       res.set('Cross-Origin-Resource-Policy', 'cross-origin');
-      res.set('Cache-Control', 'public, max-age=86400'); // Cache 1 día
+      res.set('Cache-Control', 'public, max-age=86400');
     },
   });
 
-  console.log('📁 Ruta física videos:', join(__dirname, '..', 'uploads'));
-  console.log('🌐 URL pública videos: /uploads/');
-  console.log('🎥 Ejemplo: http://localhost:3000/uploads/videos/video-123.mp4');
+  console.log('');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('📁 ARCHIVOS ESTÁTICOS CONFIGURADOS');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('🖼️  Imágenes:');
+  console.log('   Carpeta física: /app/public/imagenes');
+  console.log('   URL pública:    /public/imagenes/');
+  console.log('   Ejemplo:        http://172.20.20.5:3000/public/imagenes/producto-123.jpg');
+  console.log('');
+  console.log('🎥 Videos:');
+  console.log('   Carpeta física: /app/uploads/videos');
+  console.log('   URL pública:    /uploads/videos/');
+  console.log('   Ejemplo:        http://172.20.20.5:3000/uploads/videos/video-123.mp4');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('');
 
   // ═══════════════════════════════════════════════════════════════
   // 🌐 CORS - ✅ CONFIGURACIÓN MEJORADA
@@ -107,7 +91,7 @@ async function bootstrap() {
   // 🚀 INICIAR SERVIDOR
   // ═══════════════════════════════════════════════════════════════
   const port = configService.get<number>('PORT', 3000);
-  const host = configService.get<string>('API_HOST', '172.20.20.70');
+  const host = configService.get<string>('API_HOST', '172.20.20.5');
 
   await app.listen(port, '0.0.0.0');
 
@@ -122,12 +106,12 @@ async function bootstrap() {
   console.log(`   🔓 GET  http://${host}:${port}/${apiPrefix}/productos`);
   console.log('');
   console.log('🖼️  Archivos estáticos (IMÁGENES):');
-  console.log(`   📁 Carpeta física: ${imagenesPath}`);
+  console.log(`   📁 Carpeta física: /app/public/imagenes`);
   console.log(`   🌐 URL base: http://${host}:${port}/public/imagenes/`);
   console.log(`   📸 Ejemplo: http://${host}:${port}/public/imagenes/producto-123.jpg`);
   console.log('');
   console.log('🎥 Archivos estáticos (VIDEOS):');
-  console.log(`   📁 Carpeta física: ${join(__dirname, '..', 'uploads', 'videos')}`);
+  console.log(`   📁 Carpeta física: /app/uploads/videos`);
   console.log(`   🌐 URL base: http://${host}:${port}/uploads/videos/`);
   console.log(`   🎬 Ejemplo: http://${host}:${port}/uploads/videos/video-123.mp4`);
   console.log('');
