@@ -1,4 +1,4 @@
-// src/modules/videos/videos.controller.ts - CORREGIDO
+// src/modules/videos/videos.controller.ts - ✅ CORREGIDO COMPLETO
 import {
   Controller,
   Get,
@@ -40,7 +40,7 @@ export class VideosController {
   @UseInterceptors(
     FileInterceptor('video', {
       storage: diskStorage({
-        destination: './uploads/videos',
+        destination: '/app/uploads/videos', // 🔥 CORREGIDO: Ruta absoluta
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);
@@ -76,9 +76,9 @@ export class VideosController {
 
     const videos = await this.videosService.findAll();
 
-    // 🔥 FIX CRÍTICO: Construir BASE_URL desde la request
-    const protocol = req.protocol; // http o https
-    const host = req.get('host'); // 172.20.20.70:3000
+    // 🔥 Construir BASE_URL desde la request
+    const protocol = req.protocol;
+    const host = req.get('host');
     const baseUrl = `${protocol}://${host}`;
 
     console.log('🌐 Protocol:', protocol);
@@ -94,7 +94,6 @@ export class VideosController {
 
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    // ✅ Retornar con URLs correctas
     return videos.map((video) => video.toJSON(baseUrl));
   }
 
@@ -112,7 +111,9 @@ export class VideosController {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     const video = await this.videosService.findOne(id);
-    const videoPath = path.join(process.cwd(), 'uploads', 'videos', video.archivo);
+    
+    // 🔥 IMPORTANTE: Usar ruta absoluta del bind mount
+    const videoPath = path.join('/app/uploads/videos', video.archivo);
 
     if (!existsSync(videoPath)) {
       console.error('❌ Archivo no encontrado:', videoPath);
@@ -125,6 +126,7 @@ export class VideosController {
 
     console.log('📊 Info:');
     console.log('  - Archivo:', video.archivo);
+    console.log('  - Ruta completa:', videoPath);
     console.log('  - Tamaño:', (fileSize / (1024 * 1024)).toFixed(2), 'MB');
     console.log('  - Range:', range || 'N/A');
 
@@ -141,7 +143,7 @@ export class VideosController {
         'Accept-Ranges': 'bytes',
         'Content-Length': chunksize,
         'Content-Type': video.tipo_mime || 'video/mp4',
-        'Cache-Control': 'public, max-age=31536000', // Cacheable 1 año
+        'Cache-Control': 'public, max-age=31536000',
       };
 
       res.writeHead(206, head);

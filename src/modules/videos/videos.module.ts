@@ -13,7 +13,7 @@ import { VideosService } from './videos.service';
     
     // 🔥 CONFIGURAR MULTER PARA VIDEOS
     MulterModule.register({
-      dest: './uploads/videos',
+      dest: '/app/uploads/videos',
     }),
   ],
   controllers: [VideosController],

@@ -10,7 +10,7 @@ import { Product } from './entities/product.entity';
   imports: [
     TypeOrmModule.forFeature([Product]), // 🔥 SOLUCIÓN CLAVE
     MulterModule.register({
-      dest: './public/imagenes',
+      dest: '/app/public/imagenes', // 🔥 RUTA ABSOLUTA
     }),
   ],
   controllers: [ProductsController],
