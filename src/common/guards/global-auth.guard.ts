@@ -1,8 +1,9 @@
 // src/common/guards/global-auth.guard.ts
+// ✅ VERSIÓN CORREGIDA - RESPETA DECORADOR @Public()
+
 import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
+import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
@@ -11,40 +12,46 @@ export class GlobalAuthGuard extends AuthGuard('jwt') {
     super();
   }
 
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    // 🔍 Verificar si la ruta es pública ANTES de validar JWT
+  canActivate(context: ExecutionContext) {
+    // ═══════════════════════════════════════════════════════════════
+    // 1️⃣ VERIFICAR SI EL ENDPOINT TIENE @Public()
+    // ═══════════════════════════════════════════════════════════════
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
+      context.getHandler(),  // Método del controller (ej: create())
+      context.getClass(),    // Clase del controller (ej: QueriesController)
     ]);
 
-    // ✅ Si es pública, permitir acceso SIN validación JWT
+    // ═══════════════════════════════════════════════════════════════
+    // 2️⃣ SI ES PÚBLICO, PERMITIR ACCESO INMEDIATAMENTE
+    // ═══════════════════════════════════════════════════════════════
     if (isPublic) {
-      console.log('✅ Ruta pública detectada - Acceso permitido sin JWT');
+      const request = context.switchToHttp().getRequest();
+      console.log(`✅ Endpoint público: ${request.method} ${request.url}`);
       return true;
     }
 
-    // 🔒 Si NO es pública, validar JWT con Passport
-    console.log('🔒 Ruta protegida - Validando JWT...');
+    // ═══════════════════════════════════════════════════════════════
+    // 3️⃣ SI NO ES PÚBLICO, VERIFICAR JWT
+    // ═══════════════════════════════════════════════════════════════
+    const request = context.switchToHttp().getRequest();
+    console.log(`🔒 Endpoint protegido: ${request.method} ${request.url} - Verificando JWT`);
+    
     return super.canActivate(context);
   }
 
-  handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
-    // 🔍 Re-verificar si es pública (por si acaso)
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-
-    if (isPublic) {
-      return user; // Permitir incluso si no hay usuario
-    }
-
-    // 🚫 Si hay error o no hay usuario, lanzar excepción
+  // ═══════════════════════════════════════════════════════════════
+  // MANEJAR ERRORES DE AUTENTICACIÓN
+  // ═══════════════════════════════════════════════════════════════
+  handleRequest(err, user, info) {
+    // Si hay error o no hay usuario
     if (err || !user) {
-      throw err || new UnauthorizedException('Token JWT inválido o expirado');
+      throw err || new UnauthorizedException({
+        statusCode: 401,
+        message: 'Token JWT inválido o ausente',
+        error: 'Unauthorized'
+      });
     }
-
+    
     return user;
   }
 }

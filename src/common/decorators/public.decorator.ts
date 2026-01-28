@@ -1,14 +1,10 @@
 // src/common/decorators/public.decorator.ts
+// ✅ DECORADOR PARA MARCAR ENDPOINTS PÚBLICOS
+
 import { SetMetadata } from '@nestjs/common';
 
-/**
- * Decorador @Public()
- * Marca una ruta como pública (sin necesidad de JWT)
- * 
- * Uso:
- * @Public()
- * @Post('login')
- * async login() { ... }
- */
+// Clave para identificar endpoints públicos
 export const IS_PUBLIC_KEY = 'isPublic';
+
+// Decorador @Public() que se aplica a controllers o métodos
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
