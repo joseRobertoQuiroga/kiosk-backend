@@ -30,7 +30,7 @@ import { Public } from '../../common/decorators/public.decorator';
 @Public()
 @Controller('videos')
 export class VideosController {
-  constructor(private readonly videosService: VideosService) {}
+  constructor(private readonly videosService: VideosService) { }
 
   // ═══════════════════════════════════════════════════════════════
   // 📤 SUBIR VIDEO
@@ -75,17 +75,11 @@ export class VideosController {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     const videos = await this.videosService.findAll();
+    const baseUrl = this.videosService.baseUrl;
 
-    // 🔥 Construir BASE_URL desde la request
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const baseUrl = `${protocol}://${host}`;
-
-    console.log('🌐 Protocol:', protocol);
-    console.log('🌐 Host:', host);
-    console.log('🌐 Base URL construida:', baseUrl);
+    console.log('🌐 Base URL configurada:', baseUrl);
     console.log(`✅ Total videos: ${videos.length}`);
-    
+
     videos.forEach((v, i) => {
       const videoUrl = v.toJSON(baseUrl).url;
       console.log(`   ${i + 1}. ${v.titulo}`);
@@ -111,7 +105,7 @@ export class VideosController {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     const video = await this.videosService.findOne(id);
-    
+
     // 🔥 IMPORTANTE: Usar ruta absoluta del bind mount
     const videoPath = path.join('/app/uploads/videos', video.archivo);
 

@@ -2,6 +2,7 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
 import { Video } from './entities/video.entity';
 import { CreateVideoDto } from './dto/create-video.dto';
 import * as fs from 'fs';
@@ -9,10 +10,21 @@ import * as path from 'path';
 
 @Injectable()
 export class VideosService implements OnModuleInit {
+  public readonly baseUrl: string;
+
   constructor(
     @InjectRepository(Video)
     private readonly videoRepository: Repository<Video>,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    const protocol = this.configService.get<string>('API_PROTOCOL', 'http');
+    const host = this.configService.get<string>('API_HOST', 'api.pixel-bo.com');
+    const port = this.configService.get<number>('PORT', 3000);
+
+    this.baseUrl = `${protocol}://${host}:${port}`;
+
+    console.log('🎬 VideosService - Base URL:', this.baseUrl);
+  }
 
   async onModuleInit() {
     const count = await this.videoRepository.count();
@@ -167,7 +179,7 @@ export class VideosService implements OnModuleInit {
     ]);
 
     const videos = await this.videoRepository.find();
-    
+
     // Calcular tamaño total (manejo de nulls)
     const totalSize = videos.reduce((sum, v) => {
       return sum + (v.tamanio ?? 0);
